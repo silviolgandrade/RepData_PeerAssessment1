@@ -15,7 +15,7 @@ library(lubridate)
 library(ggplot2)
 
 # Global configs
-knitr::opts_chunk$set(echo=TRUE, tidy=FALSE, fig.path='./figures/')
+knitr::opts_chunk$set(echo=TRUE, tidy=FALSE, fig.path='/figures/')
 ```
 
 ---
