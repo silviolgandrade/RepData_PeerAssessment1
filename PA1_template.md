@@ -6,7 +6,8 @@
 
 ### R procedures
 
-```{r general_rules}
+
+```r
 # set work directory
 setwd("D:/jhds/jhds_05_Reprodicuble_Research/GitHub/RepData_PeerAssessment1")
 
@@ -25,7 +26,8 @@ knitr::opts_chunk$set(echo=TRUE, fig.path='./figures/')
 
 Assuming data for analysis in original file "activity.zip" inside the fork repo from RDPeng.
 
-```{r load_data}
+
+```r
 unzip(zipfile="activity.zip")
 activity <- read.csv(file = 'activity.csv', stringsAsFactors = FALSE)
 activity$date <- as.Date(activity$date, format="%Y-%m-%d")
@@ -36,13 +38,24 @@ days <- as.factor(activity$date)
 head(activity)
 ```
 
+```
+##   steps       date interval weekday
+## 1    NA 2012-10-01        0     Mon
+## 2    NA 2012-10-01        5     Mon
+## 3    NA 2012-10-01       10     Mon
+## 4    NA 2012-10-01       15     Mon
+## 5    NA 2012-10-01       20     Mon
+## 6    NA 2012-10-01       25     Mon
+```
+
 ---
 
 ### Question 1: What is mean total number of steps taken per day?
 
 Step 1. Make a histogram of the total number of steps taken each day
 
-```{r question_1_histogram, fig.width=6, fig.height=3}
+
+```r
 histogram <- 
 qplot(x=date, y=steps,
       data=subset(activity, complete.cases(activity)),
@@ -52,11 +65,14 @@ qplot(x=date, y=steps,
 plot(histogram)
 ```
 
+![plot of chunk question_1_histogram](./figures/question_1_histogram-1.png) 
+
 .
 
 Step 2. Calculate and report the mean and median total number of steps taken per day
 
-```{r question_1_statistics}
+
+```r
 # Data per day
 daily_activity <-
   aggregate(formula = steps~date, data = activity,
@@ -67,7 +83,7 @@ mean_steps <- round(mean(daily_activity$steps), 2)  # Mean
 median_steps <- quantile(x = daily_activity$steps, probs = 0.5)  # Median, 50%Q
 ```
 
-    Mean is `r as.character(mean_steps)` and  median is `r as.character(median_steps)`.
+    Mean is 10766.19 and  median is 10765.
 
 ---
 
@@ -75,7 +91,8 @@ median_steps <- quantile(x = daily_activity$steps, probs = 0.5)  # Median, 50%Q
 
 Step 1. Make a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
-```{r question_2_plot}
+
+```r
 tempo <- split(x=activity,f=activity$date)
 tempo <- tempo[[1]]['interval']
 
@@ -90,12 +107,19 @@ xyplot(mediaStep ~ tempo,
        par.settings=list(layout.heights=list(top.padding=3, bottom.padding=6)))
 ```
 
+![plot of chunk question_2_plot](./figures/question_2_plot-1.png) 
+
 .
 
 Step 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r question_2_average}
+
+```r
 names(which.max(x=mediaStep))
+```
+
+```
+## [1] "835"
 ```
 
 ---
@@ -104,7 +128,8 @@ names(which.max(x=mediaStep))
 
 Step 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
-```{r question_3_NAs}
+
+```r
 # Count the number of NAs
 global_NAs <- sum(!complete.cases(activity))
 step_NAs <- sum(is.na(activity$steps))
@@ -116,9 +141,9 @@ dates_in_range <- seq.Date(from = min(activity$date),
 date_NAs <- sum(!activity$date[complete.cases(activity)] %in% dates_in_range)
 ```
 
-    Global number of NAs in dataset: `r global_NAs`
+    Global number of NAs in dataset: 2304
 
-    Total of NAs in step column: `r step_NAs`
+    Total of NAs in step column: 2304
 
 .
 
@@ -128,7 +153,8 @@ Step 3. Create a new dataset that is equal to the original dataset but with the 
 
     Imputation strategy: complete missing cases with the average number of steps from the interval.
 
-```{r question_3_replace_NAs}
+
+```r
 interval_activity <- aggregate(formula=steps~interval, data=activity, FUN=mean, na.rm=TRUE)
 interval_activity$imputed_steps <- floor(interval_activity$steps)
 
@@ -153,11 +179,22 @@ daily_imputed_activity <-
 head(daily_imputed_activity)
 ```
 
+```
+##         date steps
+## 1 2012-10-01 10641
+## 2 2012-10-02   126
+## 3 2012-10-03 11352
+## 4 2012-10-04 12116
+## 5 2012-10-05 13294
+## 6 2012-10-06 15420
+```
+
 .
 
 step 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r question_3_statistcs}
+
+```r
 # Calculate summary statistics
 mean_imputed_steps <- round(mean(daily_imputed_activity$steps), 2)
 median_imputed_steps <- quantile(x = daily_imputed_activity$steps, probs = 0.5)
@@ -168,18 +205,20 @@ median_imputed_steps <- quantile(x = daily_imputed_activity$steps, probs = 0.5)
 
     With the clean dataset, we have:
 
-    Mean of data: `r mean_imputed_steps`
+    Mean of data: 1.074977 &times; 10<sup>4</sup>
 
-    Median of data: `r median_imputed_steps`
+    Median of data: 1.0641 &times; 10<sup>4</sup>
 
     There are a few difference between both datasets (with and without NAs).
 
 
-```{r question_3_histogram, fig.width=6, fig.height=3}
+
+```r
 histogram %+% imputed_activity +
   labs(title='Plot 3: Steps per day - without NAs values')
-
 ```
+
+![plot of chunk question_3_histogram](./figures/question_3_histogram-1.png) 
 
 ---
 
@@ -187,18 +226,30 @@ histogram %+% imputed_activity +
 
 Step 1. Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
-```{r question_4_day}
+
+```r
 # Input a column weekend or weekday
 imputed_activity['dayTypeInWeek'] = factor(sapply(imputed_activity$date, function(x){ if (wday(x) == 6 | wday(x) == 7) { "weekend" } else { "weekday"} }))
 avgStepdayTypeInWeek = aggregate(steps~interval + dayTypeInWeek, mean, data=imputed_activity)
 
 head(imputed_activity)
 ```
+
+```
+##   interval steps       date weekday dayTypeInWeek
+## 1        0     1 2012-10-01     Mon       weekday
+## 2        0     0 2012-11-23     Fri       weekend
+## 3        0     0 2012-10-28     Sun       weekday
+## 4        0     0 2012-11-06    Tues       weekday
+## 5        0     0 2012-11-24     Sat       weekend
+## 6        0     0 2012-11-15   Thurs       weekday
+```
 .
 
 Step 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
-```{r question_4_plot}
+
+```r
 library(lattice)
 xyplot( steps ~ interval | dayTypeInWeek,
         data = avgStepdayTypeInWeek,
@@ -207,4 +258,6 @@ xyplot( steps ~ interval | dayTypeInWeek,
         xlab="5 minute interval",
         ylab="Averaged Steps")
 ```
+
+![plot of chunk question_4_plot](./figures/question_4_plot-1.png) 
 
