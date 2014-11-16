@@ -1,6 +1,6 @@
 ### Readme file
 
-This repo content is about the Program Assignment 1 from COuresa Reproducible Research Class.
+This repo content is about the Program Assignment 1 from Couresa Reproducible Research Class.
 
 This job was done in november/2014, by Silviolgandrade.
 
@@ -13,5 +13,5 @@ There are too the required files:
 
 The figures from plots are in the "figures" folder.
 
-Once this repo is a fork from the original from JDPeng, also content a copy from the database.
+Once this repo is a fork from the original from JDPeng, also content a copy from the database "activity.zip" and uncompressed "activity.csv".
 
