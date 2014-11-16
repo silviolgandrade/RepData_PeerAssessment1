@@ -11,6 +11,7 @@
 setwd("D:/jhds/jhds_05_Reprodicuble_Research/GitHub/RepData_PeerAssessment1")
 
 # load packages
+library(knitr)
 library(lubridate)
 library(ggplot2)
 
